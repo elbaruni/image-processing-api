@@ -15,6 +15,20 @@ run following command
 
 `node dist/index`
 
+## Endpoint url and parameters
+
+- local hostname:http://localhost:3000
+- api url:/api/images?
+- parameters:
+
+  1. filename as string
+  2. width and height as numbers
+
+- example of working url :
+  1. filename =encenadaport
+  2. width= 190 and height =870.
+     http://localhost:3000/api/images?filename=encenadaport&width=190&height=870
+
 ## typeScript build
 
 `npm run build`

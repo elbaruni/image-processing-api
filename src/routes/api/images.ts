@@ -1,33 +1,24 @@
-import express from 'express';   
-import fs from 'fs';
-import path from 'path'
- import sharp   from 'sharp';
+import express from 'express';
+import { ReturnObject, resizeImage } from '../../utils/utilities';
+
 const images = express.Router();
 
-images.get('/', async(req, res) => { 
-    try{    
-    const imagesPath= './src/imgs/' 
-    const filename=req.query.filename as string;
-    const width=req.query.width as string;
-    const height=req.query.height as string;     
-    const isFullExist=fs.existsSync(`${imagesPath}full/${filename}.jpg`)
-    const isThumbExist=fs.existsSync(`${imagesPath}thumb/${req.query.filename}_${width}_${height}.jpg`)
- 
-    if(isFullExist) {  
-      if(!isThumbExist){
-        await sharp(`.${imagesPath}full/${filename}.jpg`).resize(parseInt(width),parseInt( height)).png()
-        .toFile(`.${imagesPath}thumb/${req.query.filename}_${width}_${height}.jpg`);        
-      }      
-      res.status(200).sendFile( `${path.resolve(__dirname, '../../imgs')}/thumb/${req.query.filename}_${width}_${height}.jpg`)
-    }else{
-      res.status(404).send('Image not found!');  
-    }    
+images.get('/', async (req, res): Promise<void> => {
+  try {
+    let filename: string = req.query.filename as string;
+    let width: number = Number(req.query.width as string);
+    let height: number = Number(req.query.height as string);
+    let result: ReturnObject = { path: '', message: '', error: 0 };
+    result = await resizeImage(filename, width, height);
+    if (result.error === 0) {
+      res.status(200).sendFile(result.path);
+    } else {
+      res.status(result.error).send(result.message);
     }
-    catch(e:any){
-      console.log(e.message as string)
-      res.status(500).send()     
-    }
-
+  } catch (e: any) {
+    console.log(e.message as string);
+    res.status(500).send();
+  }
 });
 
 export default images;
