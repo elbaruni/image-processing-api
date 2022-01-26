@@ -1,9 +1,9 @@
 import express from 'express';
 import { ReturnObject, resizeImage } from '../../utils/utilities';
-
+import {Request, Response} from 'express';
 const images = express.Router();
 
-images.get('/', async (req, res): Promise<void> => {
+images.get('/', async (req:Request, res:Response): Promise<void> => {
   try {
     let filename: string = req.query.filename as string;
     let width: number = Number(req.query.width as string);
